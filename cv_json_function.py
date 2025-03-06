@@ -11,7 +11,7 @@ import aiofiles
 load_dotenv()
 
 async def cv_json(file_path):
-    if not (file_path.endswith(".pdf") or file_path.endswith(".doc") or file_path.endswith(".docx")):
+    if not (file_path.endswith(".pdf") or file_path.endswith(".docx")):
         raise HTTPException(status_code=400, detail="Only PDF and Word documents are allowed")
     pipeline_options = PdfPipelineOptions(do_table_structure=True)
     pipeline_options.table_structure_options.mode = TableFormerMode.ACCURATE  # use more accurate TableFormer model
