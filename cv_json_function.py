@@ -8,6 +8,7 @@ from openai import OpenAI
 import os
 from fastapi import HTTPException
 import aiofiles
+from dict_file import mapping_dict
 load_dotenv()
 
 async def cv_json(file_path):
@@ -77,7 +78,23 @@ async def cv_json(file_path):
         temperature=0
     )
 
-    return json.loads(response.choices[0].message.content)
+    res_json =  json.loads(response.choices[0].message.content)
+
+
+    def replace_values(data, mapping):
+        if isinstance(data, dict):
+            return {mapping.get(key, key): replace_values(value, mapping) for key, value in data.items()}
+        elif isinstance(data, list):
+            return [replace_values(item, mapping) for item in data]
+        elif isinstance(data, str):
+            return mapping.get(data, data)  # Replace if found, else keep original
+        return data
+
+    mapped_res = replace_values(res_json,mapping_dict)
+
+    return mapped_res
+    
+
     
         
 
